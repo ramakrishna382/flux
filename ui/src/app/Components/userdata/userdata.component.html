@@ -1,0 +1,125 @@
+<div class="Navbar">
+    <nav class="navbar bg-primary">
+        <h2 class="mx-4"><i class="fa fa-user" routerLink=""></i>&nbsp; User Details</h2>
+        <div class="d-flex">
+            <!-- <span class="Username" *ngIf="userDetails?.username">Welcome: <b>{{userDetails?.username}}</b></span> -->
+            <button (click)="logout()" *ngIf="userDetails.token" class="btn btn-danger mx-4" type="button">Logout
+            </button>
+        </div>
+    </nav>
+</div>
+
+
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div *ngIf="userDetails.role == 'admin'" class="addUser m-3">
+                        <button (click)="AddEmp()" class="btn btn-success mx-2" data-bs-target="#exampleModal"
+                                data-bs-toggle="modal" type="button">
+                            <i class="fa fa-plus"></i>&nbsp;Add User
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="EmployeeDetails.length !== 0" class="card p-3">
+                <div class="table">
+                    <table class="table table-striped">
+                        <thead>
+                        <th class="text-center">Employee ID</th>
+                        <th class="text-center"> Name</th>
+                        <th class="text-center"> Code</th>
+                        <th class="text-center">Salary(₹)</th>
+                        <th *ngIf="userDetails.role == 'admin'" class="text-center">Actions</th>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let data of EmployeeDetails; let i = index;">
+                            <td class="text-center">{{ i + 1 }}</td>
+                            <td class="text-center">{{ data?.name }}</td>
+                            <td class="text-center">{{ data?.employee_code }}</td>
+                            <td class="text-center">{{ data?.salary }}/-</td>
+                            <td *ngIf="userDetails.role == 'admin'" class="text-center">
+                                <button (click)="Edit(data)" class="btn btn-info" data-bs-target="#exampleModal"
+                                        data-bs-toggle="modal"
+                                        type="button">
+                                    <i class="fa fa-pencil"></i>&nbsp;Edit
+                                </button>
+                                <button (click)="Delete(data)" class="btn btn-danger mx-2">
+                                    <i class="fa fa-trash"></i>&nbsp;Delete
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div *ngIf="EmployeeDetails.length == 0" class="no-Data">
+                <h2>No Data Found, Please add some Users Data!</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">User Details</h1>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <form #empdetails="ngForm" (ngSubmit)="Onsubmit(empdetails)" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label" for="name">Full Name</label>
+                        <input [(ngModel)]="name" class="form-control" id="name" maxlength="40" minlength="5" name="name"
+                               ngModel required type="text">
+                        <div *ngIf="empdetails && empdetails.controls['name']">
+                            <div *ngIf="empdetails.controls['name'].invalid && (empdetails.controls['name'].dirty || empdetails.controls['name'].touched)"
+                                 class="text-danger">
+                                Full Name is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="employee_code">EmpCode</label>
+                        <input [(ngModel)]="employee_code" class="form-control" id="employee_code" name="employee_code" ngModel required
+                               type="text">
+                        <div *ngIf="empdetails && empdetails.controls['employee_code']">
+                            <div *ngIf="empdetails.controls['employee_code'].invalid && (empdetails.controls['employee_code'].dirty || empdetails.controls['employee_code'].touched)"
+                                 class="text-danger">
+                                EmpCode is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="salary">Salary</label>
+                        <input [(ngModel)]="salary" class="form-control" id="salary" maxlength="6" minlength="4" name="salary"
+                               ngModel
+                               required type="number">
+                        <div *ngIf="empdetails && empdetails.controls['salary']">
+                            <div *ngIf="empdetails.controls['salary'].invalid && (empdetails.controls['salary'].dirty || empdetails.controls['salary'].touched)"
+                                 class="text-danger">
+                                Salary is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
+                        <button *ngIf="showAdd && empdetails" [disabled]="!empdetails.valid" [ngStyle]="{'cursor': !empdetails.valid ? 'not-allowed' : 'pointer'}"
+                                class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                type="submit">Add
+                        </button>
+                        <button (click)="Update(empdetails)" *ngIf="showUpdate && empdetails" class="btn btn-primary"
+                                data-bs-dismiss="modal" type="button">Update
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
